@@ -86,6 +86,9 @@ def main():
 
 def shortest_path(source, target):
     """
+    source: id initial person
+    target: id final person
+
     Returns the shortest list of (movie_id, person_id) pairs
     that connect the source to the target.
 
@@ -107,6 +110,7 @@ def shortest_path(source, target):
 
     # Mantener loop hasta finalizar
     while True:
+        # print (frontier)
 
         # Si no hay nada en el frontier, entonces no hay camino
         if frontier.empty ():
@@ -116,13 +120,32 @@ def shortest_path(source, target):
         node = frontier.remove ()
         num_explored += 1
 
-        # SI el nodo es el termino, llegamos
+        # Si el nodo es el termino, llegamos
         if node.state == target:
-            actions = []
-            cells = []
+            path = []
 
-            
+            # Siguiendo los nodos asociados
+            # actions are the movies
+            # state are the person
+            while node.parent is not None:
+                #             movie        person
+                path.append ((node.action, node.state))
+                node = node.parent
 
+            path.reverse ()
+
+            # Esto se deberia cambiar dado que
+            # se debe obtener de la forma (id_movie, id_actor)
+            return path
+        
+        # Marcar nodo explorado
+        explored.add (node.state)
+
+        # Agregar los vecinos al frontier
+        for movie_id, person_id in neighbors_for_person (node.state):
+            if not frontier.contains_state (person_id) and person_id not in explored:
+                child = Node (state=person_id, parent=node, action=movie_id)
+                frontier.add (child)
 
 def person_id_for_name(name):
     """
