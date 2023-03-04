@@ -7,6 +7,7 @@ symbols = []
 
 knowledge = And()
 
+# Make a symbol for each option
 for person in people:
     for house in houses:
         symbols.append(Symbol(f"{person}{house}"))
@@ -19,6 +20,8 @@ for person in people:
         Symbol(f"{person}Ravenclaw"),
         Symbol(f"{person}Slytherin")
     ))
+# Al parecer no es necesario agregar los simbolos ya creados porque como 
+# se instancian de la misma fora, entonces son iguales
 
 # Only one house per person.
 for person in people:
@@ -38,14 +41,20 @@ for house in houses:
                     Implication(Symbol(f"{p1}{house}"), Not(Symbol(f"{p2}{house}")))
                 )
 
+# print (knowledge.formula ())
+
+# We like to add new information
+# Gilderoy on gryffindor or ravenclaw
 knowledge.add(
     Or(Symbol("GilderoyGryffindor"), Symbol("GilderoyRavenclaw"))
 )
 
+# Pomona not in slytherin
 knowledge.add(
     Not(Symbol("PomonaSlytherin"))
 )
 
+# Minerva on gryffindor
 knowledge.add(
     Symbol("MinervaGryffindor")
 )
