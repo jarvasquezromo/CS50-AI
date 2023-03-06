@@ -105,27 +105,35 @@ class Sentence():
         """
         Returns the set of all cells in self.cells known to be mines.
         """
-        raise NotImplementedError
+        if len(self.cells) == self.count:
+            return self.cells.copy ()
+        return None
 
     def known_safes(self):
         """
         Returns the set of all cells in self.cells known to be safe.
         """
-        raise NotImplementedError
-
+        if self.count == 0:
+            return self.cells.copy ()
+        return None
+        
     def mark_mine(self, cell):
         """
         Updates internal knowledge representation given the fact that
         a cell is known to be a mine.
         """
-        raise NotImplementedError
+        if cell in self.cells:
+            self.cells.remove(cell)
+            if self.count > 0:
+                self.count -= 1
 
     def mark_safe(self, cell):
         """
         Updates internal knowledge representation given the fact that
         a cell is known to be safe.
         """
-        raise NotImplementedError
+        if cell in self.cells:
+            self.cells.remove (cell)
 
 
 class MinesweeperAI():
@@ -193,7 +201,12 @@ class MinesweeperAI():
         This function may use the knowledge in self.mines, self.safes
         and self.moves_made, but should not modify any of those values.
         """
-        raise NotImplementedError
+        save_moves_not_made = self.safes.difference (self.moves_made)
+
+        try:
+            return random.choice (list(save_moves_not_made))
+        except IndexError:
+            return None
 
     def make_random_move(self):
         """
@@ -202,4 +215,8 @@ class MinesweeperAI():
             1) have not already been chosen, and
             2) are not known to be mines
         """
-        raise NotImplementedError
+        # searching cells availables
+        all_cells = set ([(i, j) for i in range(self.height) for j in range(self.width)])
+        available_cells = all_cells.difference (self.mines, self.moves_made)
+
+        return random.choice (list(available_cells))
